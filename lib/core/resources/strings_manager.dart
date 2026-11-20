@@ -39,4 +39,6 @@ abstract final class StringsManager {
   static const String passwordNotMatch = "Passwords don't match";
   static const String phoneEmpty = "Phone number can't be empty";
   static const String phoneInvalid = "Invalid phone number";
+  static const String forgetPasswordTitle = "Forget Password";
+  static const String verifyEmail = "Verify Email";
 }

@@ -4,10 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_app/core/resources/app_constants.dart';
 import 'package:movie_app/core/resources/assets_manager.dart';
 import 'package:movie_app/core/resources/colors_manager.dart';
+import 'package:movie_app/core/resources/routes_manager.dart';
 import 'package:movie_app/core/resources/strings_manager.dart';
 import 'package:movie_app/core/reusable_components/custom_button.dart';
 import 'package:movie_app/core/reusable_components/custom_field.dart';
-import 'package:movie_app/ui/login/widgets/language_switch.dart';
+import 'package:movie_app/core/reusable_components/language_switch.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -124,7 +125,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, RoutesManager.registerRoute);
+                      },
                       style: TextButton.styleFrom(padding: EdgeInsets.zero),
                       child: Text(
                         StringsManager.createOne,

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:movie_app/core/resources/routes_manager.dart';
 import 'package:movie_app/ui/login/screen/login_screen.dart';
 import 'package:movie_app/ui/onboarding/screen/onboarding_screen.dart';
+import 'package:movie_app/ui/register/screen/register_screen.dart';
 import 'package:movie_app/ui/splash/screen/splash_screen.dart';
 
 void main() {
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
           RoutesManager.splashRoute: (_) => SplashScreen(),
           RoutesManager.onboardingRoute: (_) => OnboardingScreen(),
           RoutesManager.loginRoute: (_) => LoginScreen(),
+          RoutesManager.registerRoute: (_) => RegisterScreen(),
         },
         initialRoute: RoutesManager.splashRoute,
       ),

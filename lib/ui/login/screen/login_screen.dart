@@ -87,7 +87,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, RoutesManager.forgetPasswordRoute);
+                    },
                     style: TextButton.styleFrom(padding: EdgeInsets.zero),
                     child: Text(
                       StringsManager.forgetPassword,

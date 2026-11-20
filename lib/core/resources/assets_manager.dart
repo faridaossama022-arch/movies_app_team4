@@ -7,4 +7,10 @@ abstract final class AssetsManager {
   static const String onBoarding4 = "assets/images/onboarding4.jpg";
   static const String onBoarding5 = "assets/images/onboarding5.jpg";
   static const String onBoarding6 = "assets/images/onboarding6.jpg";
+  static const String email = "assets/images/email.svg";
+  static const String password = "assets/images/password.svg";
+  static const String eyeoff = "assets/images/eye_off.svg";
+  static const String google = "assets/images/google.svg";
+  static const String us = "assets/images/us.svg";
+  static const String eg = "assets/images/eg.svg";
 }

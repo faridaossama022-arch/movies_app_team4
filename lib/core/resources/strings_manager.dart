@@ -15,4 +15,16 @@ abstract final class StringsManager {
   static const String next = "Next";
   static const String back = "Back";
   static const String finish = "Finish";
+  static const String email = "Email";
+  static const String password = "Password";
+  static const String forgetPassword = "Forget Password ?";
+  static const String login = "Login";
+  static const String dontHaveAccount = "Don't Have Account ? ";
+  static const String createOne = "Create One";
+  static const String or = "OR";
+  static const String loginWithGoogle = "Login With Google";
+  static const String emailEmpty = "Email can't empty";
+  static const String emailInvalid = "Invalid email";
+  static const String passwordEmpty = "Password can't empty";
+  static const String passwordShort = "Password can't be less than 8 characters";
   }

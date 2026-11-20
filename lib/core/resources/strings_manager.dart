@@ -23,8 +23,20 @@ abstract final class StringsManager {
   static const String createOne = "Create One";
   static const String or = "OR";
   static const String loginWithGoogle = "Login With Google";
-  static const String emailEmpty = "Email can't empty";
+  static const String emailEmpty = "Email can't be empty";
   static const String emailInvalid = "Invalid email";
-  static const String passwordEmpty = "Password can't empty";
+  static const String passwordEmpty = "Password can't be empty";
   static const String passwordShort = "Password can't be less than 8 characters";
-  }
+  static const String register = "Register";
+  static const String avatar = "Avatar";
+  static const String name = "Name";
+  static const String confirmPassword = "Confirm Password";
+  static const String phoneNumber = "Phone Number";
+  static const String createAccount = "Create Account";
+  static const String alreadyHaveAccount = "Already Have Account ? ";
+  static const String nameEmpty = "Name can't be empty";
+  static const String confirmPasswordEmpty = "Confirm password can't be empty";
+  static const String passwordNotMatch = "Passwords don't match";
+  static const String phoneEmpty = "Phone number can't be empty";
+  static const String phoneInvalid = "Invalid phone number";
+}

@@ -6,6 +6,8 @@ import 'package:movie_app/core/DI/di.dart';
 import 'package:movie_app/core/resources/app_constants.dart';
 import 'package:movie_app/core/resources/assets_manager.dart';
 import 'package:movie_app/core/resources/colors_manager.dart';
+import 'package:movie_app/core/resources/dialog_utils.dart';
+import 'package:movie_app/core/resources/routes_manager.dart';
 import 'package:movie_app/core/resources/strings_manager.dart';
 import 'package:movie_app/core/reusable_components/custom_button.dart';
 import 'package:movie_app/core/reusable_components/custom_field.dart';
@@ -51,7 +53,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     confirmPassController = TextEditingController();
     phoneController = TextEditingController();
     avatarController = PageController(
-      viewportFraction: 0.35,
+      viewportFraction: 0.34,
       initialPage: selectedAvatar,
     );
   }
@@ -75,11 +77,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         backgroundColor: ColorsManager.black,
         appBar: AppBar(
           backgroundColor: ColorsManager.black,
-          scrolledUnderElevation: 0,
           centerTitle: true,
           leading: IconButton(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.of(context).pushReplacementNamed(RoutesManager.loginRoute);
             },
             icon: Icon(Icons.arrow_back, color: ColorsManager.yellow),
           ),
@@ -204,50 +205,46 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         },
                       ),
                       SizedBox(height: 24.h),
-                      BlocConsumer<RegisterCubit, RegisterStates>(
+                      BlocListener<RegisterCubit, RegisterStates>(
                         listener: (context, state) {
+                          if (state is RegisterLoadingState) {
+                            DialogUtils.showLoadingDialog(context);
+                          }
                           if (state is RegisterSuccessState) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(StringsManager.accountCreated)),
-                            );
-                            Navigator.pop(context);
+                            Navigator.of(context).pop();
+                            SnackBar snackBar = SnackBar(content: Text(StringsManager.accountCreated));
+                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                            Navigator.of(context).pushReplacementNamed(RoutesManager.homeRoute);
                           }
                           if (state is RegisterFailureState) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(state.error)),
-                            );
+                            Navigator.of(context).pop();
+                            DialogUtils.showMessageDialog(context: context, content: state.error);
                           }
                         },
-                        builder: (context, state) {
-                          if (state is RegisterLoadingState) {
-                            return SizedBox(
-                              height: 56.h,
-                              child: Center(
-                                child: CircularProgressIndicator(color: ColorsManager.yellow),
+                        child: Builder(
+                          builder: (context) {
+                            return CustomButton(
+                              title: StringsManager.createAccount,
+                              height: 56,
+                              textStyle: GoogleFonts.roboto(
+                                fontSize: 20.sp,
+                                fontWeight: FontWeight.w400,
+                                color: ColorsManager.black,
                               ),
+                              onClick: () {
+                                if (formKey.currentState?.validate() ?? false) {
+                                  context.read<RegisterCubit>().register(
+                                    name: nameController.text,
+                                    email: emailController.text,
+                                    password: passController.text,
+                                    phone: phoneController.text,
+                                    avatar: avatars[selectedAvatar],
+                                  );
+                                }
+                              },
                             );
-                          }
-                          return CustomButton(
-                            title: StringsManager.createAccount,
-                            height: 56,
-                            textStyle: GoogleFonts.roboto(
-                              fontSize: 20.sp,
-                              fontWeight: FontWeight.w400,
-                              color: ColorsManager.black,
-                            ),
-                            onClick: () {
-                              if (formKey.currentState?.validate() ?? false) {
-                                context.read<RegisterCubit>().register(
-                                  name: nameController.text,
-                                  email: emailController.text,
-                                  password: passController.text,
-                                  phone: phoneController.text,
-                                  avatar: avatars[selectedAvatar],
-                                );
-                              }
-                            },
-                          );
-                        },
+                          },
+                        ),
                       ),
                       SizedBox(height: 17.h),
                       Row(
@@ -263,7 +260,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           TextButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              Navigator.of(context).pushReplacementNamed(RoutesManager.loginRoute);
                             },
                             style: TextButton.styleFrom(
                               padding: EdgeInsets.zero,
@@ -304,25 +301,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Widget buildAvatar(int index) {
     bool isSelected = index == selectedAvatar;
-    return GestureDetector(
-      onTap: () {
-        avatarController.animateToPage(
-          index,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        );
-      },
-      child: OverflowBox(
-        minWidth: 0,
-        minHeight: 0,
-        maxWidth: 158.w,
-        maxHeight: 161.h,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          width: isSelected ? 158.w : 94.w,
-          height: isSelected ? 161.h : 94.h,
-          child: Image.asset(avatars[index], fit: BoxFit.contain),
-        ),
+    return Center(
+      child: Container(
+        width: isSelected ? 150.w : 94.w,
+        height: isSelected ? 161.h : 94.h,
+        child: Image.asset(avatars[index], fit: BoxFit.contain),
       ),
     );
   }

@@ -6,6 +6,7 @@ import 'package:movie_app/core/DI/di.dart';
 import 'package:movie_app/core/resources/app_constants.dart';
 import 'package:movie_app/core/resources/assets_manager.dart';
 import 'package:movie_app/core/resources/colors_manager.dart';
+import 'package:movie_app/core/resources/dialog_utils.dart';
 import 'package:movie_app/core/resources/routes_manager.dart';
 import 'package:movie_app/core/resources/strings_manager.dart';
 import 'package:movie_app/core/reusable_components/custom_button.dart';
@@ -94,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, RoutesManager.forgetPasswordRoute);
+                        Navigator.of(context).pushNamed(RoutesManager.forgetPasswordRoute);
                       },
                       style: TextButton.styleFrom(
                         padding: EdgeInsets.zero,
@@ -112,44 +113,41 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   SizedBox(height: 33.h),
-                  BlocConsumer<LoginCubit, LoginStates>(
+                  BlocListener<LoginCubit, LoginStates>(
                     listener: (context, state) {
+                      if (state is LoginLoadingState) {
+                        DialogUtils.showLoadingDialog(context);
+                      }
                       if (state is LoginSuccessState) {
-                        Navigator.pushReplacementNamed(context, RoutesManager.homeRoute);
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pushReplacementNamed(RoutesManager.homeRoute);
                       }
                       if (state is LoginFailureState) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(state.error)),
-                        );
+                        Navigator.of(context).pop();
+                        DialogUtils.showMessageDialog(context: context, content: state.error);
                       }
                     },
-                    builder: (context, state) {
-                      if (state is LoginLoadingState) {
-                        return SizedBox(
-                          height: 56.h,
-                          child: Center(
-                            child: CircularProgressIndicator(color: ColorsManager.yellow),
+                    child: Builder(
+                      builder: (context) {
+                        return CustomButton(
+                          title: StringsManager.login,
+                          height: 56,
+                          textStyle: GoogleFonts.roboto(
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.w400,
+                            color: ColorsManager.black,
                           ),
+                          onClick: () {
+                            if (formKey.currentState?.validate() ?? false) {
+                              context.read<LoginCubit>().login(
+                                email: emailController.text,
+                                password: passController.text,
+                              );
+                            }
+                          },
                         );
-                      }
-                      return CustomButton(
-                        title: StringsManager.login,
-                        height: 56,
-                        textStyle: GoogleFonts.roboto(
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.w400,
-                          color: ColorsManager.black,
-                        ),
-                        onClick: () {
-                          if (formKey.currentState?.validate() ?? false) {
-                            context.read<LoginCubit>().login(
-                              email: emailController.text,
-                              password: passController.text,
-                            );
-                          }
-                        },
-                      );
-                    },
+                      },
+                    ),
                   ),
                   SizedBox(height: 22.h),
                   Row(
@@ -165,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, RoutesManager.registerRoute);
+                          Navigator.of(context).pushReplacementNamed(RoutesManager.registerRoute);
                         },
                         style: TextButton.styleFrom(
                           padding: EdgeInsets.zero,

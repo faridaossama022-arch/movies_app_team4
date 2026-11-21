@@ -39,4 +39,11 @@ class AuthRepositoryImpl implements AuthRepository {
       password: password,
     );
   }
+
+  @override
+  Future<void> forgetPassword({
+    required String email,
+  }) async {
+    await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+  }
 }

@@ -46,4 +46,7 @@ abstract final class StringsManager {
   static const String weakPassword = "Password is too weak";
   static const String networkError = "Check your internet connection";
   static const String somethingWentWrong = "Something went wrong, try again";
+  static const String wrongEmailOrPassword = "Email or password is incorrect";
+  static const String tooManyRequests = "Too many attempts, try again later";
+  static const String home = "Home";
 }

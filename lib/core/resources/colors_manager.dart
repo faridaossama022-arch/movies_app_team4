@@ -3,8 +3,8 @@ import 'dart:ui';
 abstract final class ColorsManager {
   static const Color black = Color(0xff121312);
   static const Color darkGrey = Color(0xff282A28);
-  static const Color yellow = Color(0xFFFFBB3B);
-  static const Color white= Color(0xffFFFFFF);
+  static const Color yellow = Color(0xffF6BD00);
+  static const Color white = Color(0xffFFFFFF);
   static const Color red = Color(0xffE82626);
   static const Color green = Color(0xff57AA53);
   static const Color onBoarding2 = Color(0xff084250);

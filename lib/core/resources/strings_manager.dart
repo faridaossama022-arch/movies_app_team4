@@ -49,4 +49,5 @@ abstract final class StringsManager {
   static const String wrongEmailOrPassword = "Email or password is incorrect";
   static const String tooManyRequests = "Too many attempts, try again later";
   static const String home = "Home";
+  static const String resetEmailSent = "Check your email to reset your password";
 }

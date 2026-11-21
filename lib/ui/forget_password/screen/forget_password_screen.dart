@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:movie_app/core/DI/di.dart';
 import 'package:movie_app/core/resources/app_constants.dart';
 import 'package:movie_app/core/resources/assets_manager.dart';
 import 'package:movie_app/core/resources/colors_manager.dart';
+import 'package:movie_app/core/resources/dialog_utils.dart';
 import 'package:movie_app/core/resources/strings_manager.dart';
 import 'package:movie_app/core/reusable_components/custom_button.dart';
 import 'package:movie_app/core/reusable_components/custom_field.dart';
+import 'package:movie_app/ui/forget_password/cubit/forget_password_cubit.dart';
+import 'package:movie_app/ui/forget_password/cubit/forget_password_states.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
   const ForgetPasswordScreen({super.key});
@@ -33,75 +38,102 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ColorsManager.black,
-      appBar: AppBar(
+    return BlocProvider(
+      create: (context) => getIt<ForgetPasswordCubit>(),
+      child: Scaffold(
         backgroundColor: ColorsManager.black,
-        scrolledUnderElevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(Icons.arrow_back, color: ColorsManager.yellow),
-        ),
-        title: Text(
-          StringsManager.forgetPasswordTitle,
-          style: GoogleFonts.roboto(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w400,
-            color: ColorsManager.yellow,
+        appBar: AppBar(
+          backgroundColor: ColorsManager.black,
+          centerTitle: true,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: Icon(Icons.arrow_back, color: ColorsManager.yellow),
+          ),
+          title: Text(
+            StringsManager.forgetPasswordTitle,
+            style: GoogleFonts.roboto(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w400,
+              color: ColorsManager.yellow,
+            ),
           ),
         ),
-      ),
-      body: Form(
-        key: formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Image.asset(
-                AssetsManager.forgetPassword,
-                width: 430.w,
-                height: 430.h,
-                fit: BoxFit.contain,
-              ),
-              SizedBox(height: 24.h),
-              Padding(
-                padding: REdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  children: [
-                    CustomField(
-                      hint: StringsManager.email,
-                      prefixPath: AssetsManager.email,
-                      controller: emailController,
-                      keyboard: TextInputType.emailAddress,
-                      validation: (value) {
-                        if (value == null || value.isEmpty) {
-                          return StringsManager.emailEmpty;
-                        }
-                        if (!RegExp(AppConstants.emailRegex).hasMatch(value)) {
-                          return StringsManager.emailInvalid;
-                        }
-                        return null;
-                      },
-                    ),
-                    SizedBox(height: 24.h),
-                    CustomButton(
-                      title: StringsManager.verifyEmail,
-                      height: 56,
-                      textStyle: GoogleFonts.roboto(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w400,
-                        color: ColorsManager.black,
-                      ),
-                      onClick: () {
-                        if (formKey.currentState?.validate() ?? false) {}
-                      },
-                    ),
-                  ],
+        body: Form(
+          key: formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Image.asset(
+                  AssetsManager.forgetPassword,
+                  width: 430.w,
+                  height: 430.h,
+                  fit: BoxFit.contain,
                 ),
-              ),
-            ],
+                SizedBox(height: 24.h),
+                Padding(
+                  padding: REdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    children: [
+                      CustomField(
+                        hint: StringsManager.email,
+                        prefixPath: AssetsManager.email,
+                        controller: emailController,
+                        keyboard: TextInputType.emailAddress,
+                        validation: (value) {
+                          if (value == null || value.isEmpty) {
+                            return StringsManager.emailEmpty;
+                          }
+                          if (!RegExp(AppConstants.emailRegex).hasMatch(value)) {
+                            return StringsManager.emailInvalid;
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 24.h),
+                      BlocListener<ForgetPasswordCubit, ForgetPasswordStates>(
+                        listener: (context, state) {
+                          if (state is ForgetPasswordLoadingState) {
+                            DialogUtils.showLoadingDialog(context);
+                          }
+                          if (state is ForgetPasswordSuccessState) {
+                            Navigator.of(context).pop();
+                            SnackBar snackBar = SnackBar(content: Text(StringsManager.resetEmailSent));
+                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                            Navigator.of(context).pop();
+                          }
+                          if (state is ForgetPasswordFailureState) {
+                            Navigator.of(context).pop();
+                            DialogUtils.showMessageDialog(context: context, content: state.error);
+                          }
+                        },
+                        child: Builder(
+                          builder: (context) {
+                            return CustomButton(
+                              title: StringsManager.verifyEmail,
+                              height: 56,
+                              textStyle: GoogleFonts.roboto(
+                                fontSize: 20.sp,
+                                fontWeight: FontWeight.w400,
+                                color: ColorsManager.black,
+                              ),
+                              onClick: () {
+                                if (formKey.currentState?.validate() ?? false) {
+                                  context.read<ForgetPasswordCubit>().forgetPassword(
+                                    email: emailController.text,
+                                  );
+                                }
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

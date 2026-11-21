@@ -29,8 +29,6 @@ class LoginCubit extends Cubit<LoginStates> {
   String getErrorMessage(String code) {
     switch (code) {
       case "invalid-credential":
-      case "user-not-found":
-      case "wrong-password":
         return StringsManager.wrongEmailOrPassword;
       case "invalid-email":
         return StringsManager.emailInvalid;

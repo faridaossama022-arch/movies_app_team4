@@ -41,4 +41,9 @@ abstract final class StringsManager {
   static const String phoneInvalid = "Invalid phone number";
   static const String forgetPasswordTitle = "Forget Password";
   static const String verifyEmail = "Verify Email";
+  static const String accountCreated = "Account created successfully";
+  static const String emailAlreadyInUse = "This email is already registered";
+  static const String weakPassword = "Password is too weak";
+  static const String networkError = "Check your internet connection";
+  static const String somethingWentWrong = "Something went wrong, try again";
 }

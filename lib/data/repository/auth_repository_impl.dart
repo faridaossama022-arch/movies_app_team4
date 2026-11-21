@@ -28,4 +28,15 @@ class AuthRepositoryImpl implements AuthRepository {
         .doc(user.id)
         .set(user.toFireStore());
   }
+
+  @override
+  Future<void> login({
+    required String email,
+    required String password,
+  }) async {
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+  }
 }

@@ -6,4 +6,9 @@ abstract class AuthRepository {
     required String phone,
     required String avatar,
   });
+
+  Future<void> login({
+    required String email,
+    required String password,
+  });
 }

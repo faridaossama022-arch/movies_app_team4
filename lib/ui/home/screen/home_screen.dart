@@ -1,40 +1,152 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:movie_app/core/resources/assets_manager.dart';
 import 'package:movie_app/core/resources/colors_manager.dart';
-import 'package:movie_app/core/resources/routes_manager.dart';
-import 'package:movie_app/core/resources/strings_manager.dart';
-import 'package:movie_app/core/reusable_components/custom_button.dart';
+import 'package:movie_app/ui/home/screen/tabs/explore/explore_tab.dart';
+import 'package:movie_app/ui/home/screen/tabs/home/home_tab.dart';
+import 'package:movie_app/ui/home/screen/tabs/profile/profile_tab.dart';
+import 'package:movie_app/ui/home/screen/tabs/search/search_tab.dart';
+import 'package:movie_app/ui/home/widget/movie_category_section.dart';
 
-class HomeScreen extends StatelessWidget {
+import '../../../model/movie_list.dart';
+import '../widget/movie_item.dart';
+
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int selectedindex=0;
+  List<Widget> tabs=[
+    HomeTab(),SearchScreen(),ExploreTab(),ProfileTab()
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorsManager.black,
-      body: Padding(
-        padding: REdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              StringsManager.home,
-              style: GoogleFonts.roboto(
-                fontSize: 24.sp,
-                fontWeight: FontWeight.w400,
-                color: ColorsManager.white,
-              ),
-            ),
-            SizedBox(height: 24.h),
-            CustomButton(title: "Logout", onClick: () {
-              FirebaseAuth.instance.signOut();
-              Navigator.pushReplacementNamed(context, RoutesManager.loginRoute);
-            },)
-          ],
+        extendBody: true,
+        bottomNavigationBar: Padding(
+          padding: EdgeInsets.fromLTRB(12.w, 0, 12.w, 16.h),
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(24.r),
+              child:
+              NavigationBar(
+                selectedIndex: selectedindex,
+                onDestinationSelected: (value) {
+                  setState(() {
+                    selectedindex = value;
+                  });
+                },
+                height: 58.h,
+                labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+                backgroundColor: ColorsManager.darkGrey,
+                surfaceTintColor: Colors.transparent,
+                indicatorColor: Colors.transparent,
+                overlayColor: WidgetStateProperty.all(Colors.transparent),
+                elevation: 0,
+                destinations: [
+                  NavigationDestination(
+                    icon: Padding(
+                      padding: EdgeInsets.only(top: 7.h),
+                      child: SvgPicture.asset(
+                        AssetsManager.icon_home,
+                        colorFilter: ColorFilter.mode(
+                          ColorsManager.white,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
+                    selectedIcon: Padding(
+                      padding: EdgeInsets.only(top: 7.h),
+                      child: SvgPicture.asset(
+                        AssetsManager.icon_home,
+                        colorFilter: ColorFilter.mode(
+                          ColorsManager.yellow,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
+                    label: '',
+                  ),
+                  NavigationDestination(
+                    icon: Padding(
+                      padding: EdgeInsets.only(top: 7.h),
+                      child: SvgPicture.asset(
+                        AssetsManager.icon_serach,
+                        colorFilter: ColorFilter.mode(
+                          ColorsManager.white,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
+                    selectedIcon: Padding(
+                      padding: EdgeInsets.only(top: 7.h),
+                      child: SvgPicture.asset(
+                        AssetsManager.icon_serach,
+                        colorFilter: ColorFilter.mode(
+                          ColorsManager.yellow,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
+                    label: '',
+                  ),
+                  NavigationDestination(
+                    icon: Padding(
+                      padding: EdgeInsets.only(top: 7.h),
+                      child: SvgPicture.asset(
+                        AssetsManager.icon_explore,
+                        colorFilter: ColorFilter.mode(
+                          ColorsManager.white,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
+                    selectedIcon: Padding(
+                      padding: EdgeInsets.only(top: 7.h),
+                      child: SvgPicture.asset(
+                        AssetsManager.icon_explore,
+                        colorFilter: ColorFilter.mode(
+                          ColorsManager.yellow,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
+                    label: '',
+                  ),
+                  NavigationDestination(
+                    icon: Padding(
+                      padding: EdgeInsets.only(top: 7.h),
+                      child: SvgPicture.asset(
+                        AssetsManager.icon_profile,
+                        colorFilter: ColorFilter.mode(
+                          ColorsManager.white,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
+                    selectedIcon: Padding(
+                      padding: EdgeInsets.only(top: 7.h),
+                      child: SvgPicture.asset(
+                        AssetsManager.icon_profile,
+                        colorFilter: ColorFilter.mode(
+                          ColorsManager.yellow,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
+                    label: '',
+                  ),
+                ],
+              )
+
+          ),
         ),
-      ),
+        body: tabs[selectedindex]
     );
   }
 }

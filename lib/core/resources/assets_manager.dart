@@ -25,5 +25,15 @@ abstract final class AssetsManager {
   static const String avatar8 = "assets/images/avatar8.png";
   static const String avatar9 = "assets/images/avatar9.png";
   static const String forgetPassword = "assets/images/forget_pass.png";
+  static const String available = "assets/images/Available Now.png";
+  static const String icon_home= "assets/images/Vector.svg";
+  static const String icon_serach= "assets/images/Vector (1).svg";
+  static const String icon_explore= "assets/images/explore.svg";
+  static const String icon_profile= "assets/images/Profiel.svg";
+  static const String wachtnow= "assets/images/Watch Now.png";
+  static const String empty= "assets/images/Empty.png";
+
+
+  static const String background = "assets/images/1917_-_Sam_Mendes_-_Hollywood_War_Film_Classic_English_Movie_Poster_9ef86295-4756-4c71-bb4e-20745c5fbc1a 3.png";
 
 }

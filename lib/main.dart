@@ -7,6 +7,7 @@ import 'package:movie_app/core/resources/my_bloc_observer.dart';
 import 'package:movie_app/core/resources/routes_manager.dart';
 import 'package:movie_app/firebase_options.dart';
 import 'package:movie_app/ui/forget_password/screen/forget_password_screen.dart';
+import 'package:movie_app/ui/home/screen/home_screen.dart';
 import 'package:movie_app/ui/login/screen/login_screen.dart';
 import 'package:movie_app/ui/onboarding/screen/onboarding_screen.dart';
 import 'package:movie_app/ui/register/screen/register_screen.dart';
@@ -38,8 +39,9 @@ class MyApp extends StatelessWidget {
           RoutesManager.loginRoute: (_) => LoginScreen(),
           RoutesManager.registerRoute: (_) => RegisterScreen(),
           RoutesManager.forgetPasswordRoute: (_) => ForgetPasswordScreen(),
+          RoutesManager.homescreen: (_) => HomeScreen(),
         },
-        initialRoute: RoutesManager.splashRoute,
+        initialRoute: RoutesManager.homescreen,
       ),
     );
   }

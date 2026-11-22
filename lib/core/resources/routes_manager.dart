@@ -4,4 +4,5 @@ abstract final class RoutesManager {
   static const String loginRoute = "/login";
   static const String registerRoute = "/register";
   static const String forgetPasswordRoute = "/forgetPassword";
+  static const String homescreen = "/homescreen";
 }

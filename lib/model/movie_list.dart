@@ -10,7 +10,7 @@ class MovieModel {
 
   static List<MovieModel> movies = [
     MovieModel(
-      image: 'assets/images/movie1.jpg',
+      image: 'assets/images/Card (2).png',
       rating: '7.7',
     ),
     MovieModel(

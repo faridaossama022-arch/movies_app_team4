@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/resources/movie_navigation.dart';
 import '../../../model/movie_list.dart';
 
 class MovieCategorySection extends StatelessWidget {
@@ -21,7 +21,6 @@ class MovieCategorySection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: Row(
@@ -62,62 +61,70 @@ class MovieCategorySection extends StatelessWidget {
 
         SizedBox(height: 18.h),
 
-
         SizedBox(
           height: 220.h,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             padding: EdgeInsets.symmetric(horizontal: 20.w),
             itemCount: movies.length,
-            separatorBuilder: (context, index) =>
-                SizedBox(width: 15.w),
+            separatorBuilder: (context, index) => SizedBox(width: 15.w),
             itemBuilder: (context, index) {
               final movie = movies[index];
 
-              return ClipRRect(
+              return InkWell(
+                onTap: movie.apiMovieId == null
+                    ? null
+                    : () => MovieNavigation.openDetails(
+                        context,
+                        movie.apiMovieId!,
+                      ),
                 borderRadius: BorderRadius.circular(15.r),
-                child: Stack(
-                  children: [
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15.r),
+                  child: Stack(
+                    children: [
+                      Image(
+                        image: movie.imageIsNetwork
+                            ? NetworkImage(movie.image)
+                            : AssetImage(movie.image),
+                        width: 146.w,
+                        height: 220.h,
+                        fit: BoxFit.cover,
+                      ),
 
-                    Image.asset(
-                      movie.image,
-                      width: 146.w,
-                      height: 220.h,
-                      fit: BoxFit.cover,
-                    ),
-
-                    Positioned(
-                      top: 20.h,
-                      left: 15.w,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 12.w,
-                          vertical: 7.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.65),
-                          borderRadius: BorderRadius.circular(25.r),
-                        ),
-                        child: Row(
-                          children: [
-                            Text(
-                              movie.rating.toString(),
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 17.sp,
+                      Positioned(
+                        top: 20.h,
+                        left: 15.w,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12.w,
+                            vertical: 7.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.65),
+                            borderRadius: BorderRadius.circular(25.r),
+                          ),
+                          child: Row(
+                            children: [
+                              Text(
+                                movie.rating.toString(),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 17.sp,
+                                ),
                               ),
-                            ),
-                            SizedBox(width: 6.w),
-                            Icon(
-                              Icons.star,
-                              color: const Color(0xffFFC107),
-                              size: 20.sp,
-                            ),
-                          ],
+                              SizedBox(width: 6.w),
+                              Icon(
+                                Icons.star,
+                                color: const Color(0xffFFC107),
+                                size: 20.sp,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             },

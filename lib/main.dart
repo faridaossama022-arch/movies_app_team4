@@ -16,6 +16,7 @@ import 'package:movie_app/ui/login/screen/login_screen.dart';
 import 'package:movie_app/ui/onboarding/screen/onboarding_screen.dart';
 import 'package:movie_app/ui/register/screen/register_screen.dart';
 import 'package:movie_app/ui/splash/screen/splash_screen.dart';
+import 'package:movie_app/ui/update_profile/screen/update_profile_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,35 +35,46 @@ class MyApp extends StatelessWidget {
       designSize: const Size(430, 932),
       minTextAdapt: true,
       splitScreenMode: true,
-      builder: (context, child) => MaterialApp(
-        title: "Movie App",
-        debugShowCheckedModeBanner: false,
-        routes: {
-          RoutesManager.splashRoute: (_) => SplashScreen(),
-          RoutesManager.onboardingRoute: (_) => OnboardingScreen(),
-          RoutesManager.loginRoute: (_) => LoginScreen(),
-          RoutesManager.registerRoute: (_) => RegisterScreen(),
-          RoutesManager.forgetPasswordRoute: (_) => ForgetPasswordScreen(),
-          RoutesManager.homeRoute: (_) => HomeScreen(),
-          RoutesManager.categoryMoviesRoute: (context) {
-            final genre = ModalRoute.of(context)?.settings.arguments;
-            return CategoryMoviesScreen(genre: genre is String ? genre : '');
-          },
-          RoutesManager.movieDetailsRoute: (context) {
-            final movieId = ModalRoute.of(context)?.settings.arguments;
-            if (movieId is! int) {
-              return const Scaffold(
-                body: Center(child: Text(StringsManager.movieNotFound)),
-              );
-            }
-            return BlocProvider(
-              create: (_) => getIt<MovieDetailsCubit>()..loadMovie(movieId),
-              child: const MovieDetailsScreen(),
-            );
-          },
-        },
-        initialRoute: RoutesManager.splashRoute,
-      ),
+      builder: (context, child) =>
+          MaterialApp(
+            title: "Movie App",
+            debugShowCheckedModeBanner: false,
+            routes: {
+              RoutesManager.splashRoute: (_) => SplashScreen(),
+              RoutesManager.onboardingRoute: (_) => OnboardingScreen(),
+              RoutesManager.loginRoute: (_) => LoginScreen(),
+              RoutesManager.registerRoute: (_) => RegisterScreen(),
+              RoutesManager.forgetPasswordRoute: (_) => ForgetPasswordScreen(),
+              RoutesManager.homeRoute: (_) => HomeScreen(),
+              RoutesManager.categoryMoviesRoute: (context) {
+                final genre = ModalRoute
+                    .of(context)
+                    ?.settings
+                    .arguments;
+                return CategoryMoviesScreen(
+                    genre: genre is String ? genre : '');
+              },
+              RoutesManager.movieDetailsRoute: (context) {
+                final movieId = ModalRoute
+                    .of(context)
+                    ?.settings
+                    .arguments;
+                if (movieId is! int) {
+                  return const Scaffold(
+                    body: Center(child: Text(StringsManager.movieNotFound)),
+                  );
+                }
+                return BlocProvider(
+                  create: (_) =>
+                  getIt<MovieDetailsCubit>()
+                    ..loadMovie(movieId),
+                  child: const MovieDetailsScreen(),
+                );
+              },
+              RoutesManager.updateProfileRoute: (_) => UpdateProfileScreen(),
+            },
+            initialRoute: RoutesManager.splashRoute,
+          ),
     );
   }
 }

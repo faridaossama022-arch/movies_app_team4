@@ -7,4 +7,5 @@ abstract final class RoutesManager {
   static const String homeRoute = "/home";
   static const String movieDetailsRoute = "/movieDetails";
   static const String categoryMoviesRoute = "/categoryMovies";
+  static const String updateProfileRoute = "/updateProfile";
 }

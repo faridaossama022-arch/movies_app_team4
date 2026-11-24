@@ -12,6 +12,7 @@ class CustomField extends StatefulWidget {
   final TextInputType keyboard;
   final String? Function(String?) validation;
   final bool isPassword;
+  final double fontSize;
 
   const CustomField({
     super.key,
@@ -21,6 +22,7 @@ class CustomField extends StatefulWidget {
     required this.keyboard,
     required this.validation,
     this.isPassword = false,
+    this.fontSize = 16,
   });
 
   @override
@@ -39,7 +41,7 @@ class _CustomFieldState extends State<CustomField> {
       obscureText: widget.isPassword ? visibleOff : false,
       cursorColor: ColorsManager.yellow,
       style: GoogleFonts.roboto(
-        fontSize: 16.sp,
+        fontSize: widget.fontSize.sp,
         fontWeight: FontWeight.w400,
         color: ColorsManager.white,
       ),
@@ -48,7 +50,7 @@ class _CustomFieldState extends State<CustomField> {
         fillColor: ColorsManager.darkGrey,
         hintText: widget.hint,
         hintStyle: GoogleFonts.roboto(
-          fontSize: 16.sp,
+          fontSize: widget.fontSize.sp,
           fontWeight: FontWeight.w400,
           color: ColorsManager.white,
         ),

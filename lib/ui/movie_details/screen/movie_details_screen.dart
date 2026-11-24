@@ -11,9 +11,7 @@ import 'package:movie_app/ui/movies/widget/movie_poster_card.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MovieDetailsScreen extends StatelessWidget {
-  final ValueChanged<YtsMovieModel>? onSaveMovie;
-
-  const MovieDetailsScreen({super.key, this.onSaveMovie});
+  const MovieDetailsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +29,12 @@ class MovieDetailsScreen extends StatelessWidget {
                 context,
                 message,
               ),
-              MovieDetailsSuccessState(:final movie, :final suggestions) =>
-                _detailsView(context, movie, suggestions),
+              MovieDetailsSuccessState(
+                  :final movie,
+                  :final suggestions,
+                  :final isSaved,
+              ) =>
+                  _detailsView(context, movie, suggestions, isSaved),
             };
           },
         ),
@@ -77,6 +79,7 @@ class MovieDetailsScreen extends StatelessWidget {
     BuildContext context,
     YtsMovieModel movie,
     List<YtsMovieModel> suggestions,
+      bool isSaved,
   ) {
     return Column(
       children: [
@@ -97,16 +100,11 @@ class MovieDetailsScreen extends StatelessWidget {
               IconButton(
                 tooltip: StringsManager.saveMovie,
                 onPressed: () {
-                  final saveMovie = onSaveMovie;
-                  if (saveMovie == null) {
-                    _showMessage(context, StringsManager.watchlistNotConnected);
-                  } else {
-                    saveMovie(movie);
-                  }
+                  context.read<MovieDetailsCubit>().toggleWatchList();
                 },
                 icon: Icon(
-                  Icons.bookmark_border,
-                  color: ColorsManager.white,
+                  isSaved ? Icons.bookmark : Icons.bookmark_border,
+                  color: isSaved ? ColorsManager.yellow : ColorsManager.white,
                   size: 25.sp,
                 ),
               ),

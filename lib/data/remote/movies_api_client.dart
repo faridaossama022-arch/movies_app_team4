@@ -1,11 +1,14 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:movie_app/core/resources/app_constants.dart';
 import 'package:movie_app/core/resources/strings_manager.dart';
 import 'package:movie_app/data/model/yts_movie_model.dart';
 
 @lazySingleton
 class MoviesApiClient {
   final Dio _dio;
+  int _mirrorIndex = 0; // آخر دومين اشتغل
 
   MoviesApiClient(this._dio);
 
@@ -13,8 +16,12 @@ class MoviesApiClient {
     required int page,
     required int limit,
     String? genre,
+    String? query,
   }) async {
     final queryParameters = <String, dynamic>{'page': page, 'limit': limit};
+    if (query != null && query.trim().isNotEmpty) {
+      queryParameters['query_term'] = query.trim();
+    }
     if (genre != null && genre.trim().isNotEmpty) {
       queryParameters['genre'] = genre;
     }
@@ -61,37 +68,65 @@ class MoviesApiClient {
     String path, {
     required Map<String, dynamic> queryParameters,
   }) async {
-    try {
-      final response = await _dio.get<dynamic>(
-        path,
-        queryParameters: queryParameters,
-      );
-      final body = _asJsonMap(response.data);
-      if (body == null) {
-        throw const MovieDataException(StringsManager.moviesServiceError);
-      }
+    final mirrors = AppConstants.moviesApiMirrors;
+    DioException? lastError;
 
-      if (body['status'] != 'ok') {
-        final message = body['status_message'];
-        throw MovieDataException(
-          message is String && message.trim().isNotEmpty
-              ? message
-              : StringsManager.moviesServiceError,
+    // نجرب كل الدومينات بالترتيب، بادئين بآخر واحد اشتغل.
+    for (var attempt = 0; attempt < mirrors.length; attempt++) {
+      final index = (_mirrorIndex + attempt) % mirrors.length;
+      try {
+        final response = await _dio.get<dynamic>(
+          '${mirrors[index]}$path',
+          queryParameters: queryParameters,
         );
-      }
-
-      final data = _asJsonMap(body['data']);
-      if (data == null) {
+        final data = _parseBody(response.data);
+        _mirrorIndex = index;
+        return data;
+      } on MovieDataException {
+        rethrow;
+      } on DioException catch (error) {
+        debugPrint('API ERROR (${mirrors[index]}): ${error.type} ${error.error}');
+        lastError = error;
+        // نكمل للدومين اللي بعده بس لو المشكلة اتصال/timeout/سيرفر واقع.
+        if (!_shouldTryNextMirror(error)) break;
+      } catch (error) {
+        debugPrint('API ERROR: $error');
         throw const MovieDataException(StringsManager.moviesServiceError);
       }
-      return data;
-    } on MovieDataException {
-      rethrow;
-    } on DioException catch (error) {
-      throw _mapDioException(error);
-    } catch (_) {
+    }
+
+    throw _mapDioException(lastError!);
+  }
+
+  bool _shouldTryNextMirror(DioException error) {
+    final code = error.response?.statusCode;
+    return error.type == DioExceptionType.connectionError ||
+        error.type == DioExceptionType.connectionTimeout ||
+        error.type == DioExceptionType.receiveTimeout ||
+        error.type == DioExceptionType.sendTimeout ||
+        error.type == DioExceptionType.unknown ||
+        error.type == DioExceptionType.badCertificate ||
+        (code != null && code >= 500);
+  }
+
+  Map<String, dynamic> _parseBody(dynamic raw) {
+    final body = _asJsonMap(raw);
+    if (body == null) {
       throw const MovieDataException(StringsManager.moviesServiceError);
     }
+    if (body['status'] != 'ok') {
+      final message = body['status_message'];
+      throw MovieDataException(
+        message is String && message.trim().isNotEmpty
+            ? message
+            : StringsManager.moviesServiceError,
+      );
+    }
+    final data = _asJsonMap(body['data']);
+    if (data == null) {
+      throw const MovieDataException(StringsManager.moviesServiceError);
+    }
+    return data;
   }
 
   MovieDataException _mapDioException(DioException error) {

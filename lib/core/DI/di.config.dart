@@ -20,6 +20,8 @@ import 'package:movie_app/data/repository/auth_repository_impl.dart' as _i408;
 import 'package:movie_app/data/repository/movies_repository.dart' as _i523;
 import 'package:movie_app/data/repository/movies_repository_impl.dart' as _i872;
 import 'package:movie_app/ui/browse/cubit/browse_cubit.dart' as _i342;
+import 'package:movie_app/ui/home/screen/tabs/home/home_cubit.dart' as _i700;
+import 'package:movie_app/ui/home/screen/tabs/search/search_cubit.dart' as _i701;
 import 'package:movie_app/ui/forget_password/cubit/forget_password_cubit.dart'
     as _i520;
 import 'package:movie_app/ui/login/cubit/login_cubit.dart' as _i379;
@@ -51,6 +53,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i523.MoviesRepository>(
       () => _i872.MoviesRepositoryImpl(gh<_i827.MoviesApiClient>()),
+    );
+    gh.factory<_i700.HomeCubit>(
+      () => _i700.HomeCubit(gh<_i523.MoviesRepository>()),
+    );
+    gh.factory<_i701.SearchCubit>(
+      () => _i701.SearchCubit(gh<_i523.MoviesRepository>()),
     );
     gh.factory<_i342.BrowseCubit>(
       () => _i342.BrowseCubit(gh<_i523.MoviesRepository>()),

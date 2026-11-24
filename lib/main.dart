@@ -15,6 +15,7 @@ import 'package:movie_app/ui/login/screen/login_screen.dart';
 import 'package:movie_app/ui/onboarding/screen/onboarding_screen.dart';
 import 'package:movie_app/ui/register/screen/register_screen.dart';
 import 'package:movie_app/ui/splash/screen/splash_screen.dart';
+import 'package:movie_app/ui/update_profile/screen/update_profile_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,6 +56,7 @@ class MyApp extends StatelessWidget {
               child: const MovieDetailsScreen(),
             );
           },
+          RoutesManager.updateProfileRoute: (_) => UpdateProfileScreen(),
         },
         initialRoute: RoutesManager.splashRoute,
       ),

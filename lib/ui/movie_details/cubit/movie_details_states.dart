@@ -9,8 +9,13 @@ class MovieDetailsLoadingState extends MovieDetailsStates {}
 class MovieDetailsSuccessState extends MovieDetailsStates {
   final YtsMovieModel movie;
   final List<YtsMovieModel> suggestions;
+  final bool isSaved;
 
-  MovieDetailsSuccessState({required this.movie, required this.suggestions});
+  MovieDetailsSuccessState({
+    required this.movie,
+    required this.suggestions,
+    required this.isSaved,
+  });
 }
 
 class MovieDetailsFailureState extends MovieDetailsStates {

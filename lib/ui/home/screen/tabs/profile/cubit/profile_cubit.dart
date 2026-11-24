@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:movie_app/core/resources/strings_manager.dart';
+import 'package:movie_app/data/model/saved_movie_model.dart';
 import 'package:movie_app/data/model/user_model.dart';
 import 'package:movie_app/data/repository/user_repository.dart';
 import 'package:movie_app/ui/home/screen/tabs/profile/cubit/profile_states.dart';
@@ -15,7 +16,9 @@ class ProfileCubit extends Cubit<ProfileStates> {
     emit(ProfileLoadingState());
     try {
       UserModel user = await userRepository.getUser();
-      emit(ProfileSuccessState(user));
+      List<SavedMovieModel> watchList = await userRepository.getWatchList();
+      List<SavedMovieModel> history = await userRepository.getHistory();
+      emit(ProfileSuccessState(user, watchList, history));
     } catch (e) {
       emit(ProfileFailureState(StringsManager.somethingWentWrong));
     }

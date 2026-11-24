@@ -78,7 +78,10 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i573.SearchCubit(gh<_i523.MoviesRepository>()),
     );
     gh.factory<_i551.MovieDetailsCubit>(
-      () => _i551.MovieDetailsCubit(gh<_i523.MoviesRepository>()),
+      () => _i551.MovieDetailsCubit(
+        gh<_i523.MoviesRepository>(),
+        gh<_i894.UserRepository>(),
+      ),
     );
     return this;
   }

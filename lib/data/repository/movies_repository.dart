@@ -5,6 +5,7 @@ abstract class MoviesRepository {
     required int page,
     required int limit,
     String? genre,
+    String? query,
   });
 
   Future<YtsMovieModel> getMovieDetails(int movieId);

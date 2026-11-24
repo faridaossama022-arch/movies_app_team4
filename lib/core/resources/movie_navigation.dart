@@ -6,4 +6,9 @@ abstract final class MovieNavigation {
     return Navigator.of(context)
         .pushNamed(RoutesManager.movieDetailsRoute, arguments: movieId);
   }
+
+  static Future<Object?> openCategory(BuildContext context, String genre) {
+    return Navigator.of(context)
+        .pushNamed(RoutesManager.categoryMoviesRoute, arguments: genre);
+  }
 }

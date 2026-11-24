@@ -14,8 +14,14 @@ class MoviesRepositoryImpl implements MoviesRepository {
     required int page,
     required int limit,
     String? genre,
+    String? query,
   }) {
-    return _apiClient.getMovies(page: page, limit: limit, genre: genre);
+    return _apiClient.getMovies(
+      page: page,
+      limit: limit,
+      genre: genre,
+      query: query,
+    );
   }
 
   @override

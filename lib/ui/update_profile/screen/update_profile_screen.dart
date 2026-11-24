@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:movie_app/core/DI/di.dart';
 import 'package:movie_app/core/resources/assets_manager.dart';
 import 'package:movie_app/core/resources/colors_manager.dart';
+import 'package:movie_app/core/resources/dialog_utils.dart';
 import 'package:movie_app/core/resources/routes_manager.dart';
 import 'package:movie_app/core/resources/strings_manager.dart';
 import 'package:movie_app/core/reusable_components/custom_button.dart';
 import 'package:movie_app/core/reusable_components/custom_field.dart';
+import 'package:movie_app/data/model/user_model.dart';
+import 'package:movie_app/ui/update_profile/cubit/update_profile_cubit.dart';
+import 'package:movie_app/ui/update_profile/cubit/update_profile_states.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
-  const UpdateProfileScreen({super.key});
+  final UserModel user;
+
+  const UpdateProfileScreen({super.key, required this.user});
 
   @override
   State<UpdateProfileScreen> createState() => _UpdateProfileScreenState();
@@ -35,8 +43,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   @override
   void initState() {
     super.initState();
-    nameController = TextEditingController();
-    phoneController = TextEditingController();
+    nameController = TextEditingController(text: widget.user.name);
+    phoneController = TextEditingController(text: widget.user.phone);
+    if (avatars.contains(widget.user.avatar)) {
+      selectedAvatar = avatars.indexOf(widget.user.avatar!);
+    }
   }
 
   @override
@@ -48,134 +59,171 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ColorsManager.black,
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
+    return BlocProvider(
+      create: (context) => getIt<UpdateProfileCubit>(),
+      child: Scaffold(
         backgroundColor: ColorsManager.black,
-        centerTitle: true,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: Icon(Icons.arrow_back, color: ColorsManager.yellow),
-        ),
-        title: Text(
-          StringsManager.pickAvatar,
-          style: GoogleFonts.roboto(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w400,
-            color: ColorsManager.yellow,
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          backgroundColor: ColorsManager.black,
+          centerTitle: true,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: Icon(Icons.arrow_back, color: ColorsManager.yellow),
+          ),
+          title: Text(
+            StringsManager.pickAvatar,
+            style: GoogleFonts.roboto(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w400,
+              color: ColorsManager.yellow,
+            ),
           ),
         ),
-      ),
-      body: Form(
-        key: formKey,
-        child: Padding(
-          padding: REdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: [
-              SizedBox(height: 37.h),
-              InkWell(
-                onTap: () {
-                  showAvatarsSheet();
-                },
-                child: Image.asset(avatars[selectedAvatar], width: 150.r, height: 150.r),
-              ),
-              SizedBox(height: 35.h),
-              CustomField(
-                hint: StringsManager.name,
-                prefixPath: AssetsManager.name,
-                controller: nameController,
-                keyboard: TextInputType.name,
-                fontSize: 20,
-                validation: (value) {
-                  if (value == null || value.isEmpty) {
-                    return StringsManager.nameEmpty;
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 20.h),
-              CustomField(
-                hint: StringsManager.phoneNumber,
-                prefixPath: AssetsManager.phone,
-                controller: phoneController,
-                keyboard: TextInputType.phone,
-                fontSize: 20,
-                validation: (value) {
-                  if (value == null || value.isEmpty) {
-                    return StringsManager.phoneEmpty;
-                  }
-                  if (value.length != 11) {
-                    return StringsManager.phoneInvalid;
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 29.h),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: REdgeInsets.only(left: 5),
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(RoutesManager.forgetPasswordRoute);
-                    },
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    child: Text(
-                      StringsManager.resetPassword,
-                      style: GoogleFonts.roboto(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w400,
-                        color: ColorsManager.white,
+        body: Form(
+          key: formKey,
+          child: Padding(
+            padding: REdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              children: [
+                SizedBox(height: 37.h),
+                InkWell(
+                  onTap: () {
+                    showAvatarsSheet();
+                  },
+                  child: Image.asset(avatars[selectedAvatar], width: 150.r, height: 150.r),
+                ),
+                SizedBox(height: 35.h),
+                CustomField(
+                  hint: StringsManager.name,
+                  prefixPath: AssetsManager.name,
+                  controller: nameController,
+                  keyboard: TextInputType.name,
+                  fontSize: 20,
+                  validation: (value) {
+                    if (value == null || value.isEmpty) {
+                      return StringsManager.nameEmpty;
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 20.h),
+                CustomField(
+                  hint: StringsManager.phoneNumber,
+                  prefixPath: AssetsManager.phone,
+                  controller: phoneController,
+                  keyboard: TextInputType.phone,
+                  fontSize: 20,
+                  validation: (value) {
+                    if (value == null || value.isEmpty) {
+                      return StringsManager.phoneEmpty;
+                    }
+                    if (value.length != 11) {
+                      return StringsManager.phoneInvalid;
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 29.h),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: REdgeInsets.only(left: 5),
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(RoutesManager.forgetPasswordRoute);
+                      },
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      child: Text(
+                        StringsManager.resetPassword,
+                        style: GoogleFonts.roboto(
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.w400,
+                          color: ColorsManager.white,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              Spacer(),
-              SizedBox(
-                width: double.infinity,
-                height: 56.h,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: ColorsManager.red,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.r),
-                    ),
-                  ),
-                  onPressed: () {},
-                  child: Text(
-                    StringsManager.deleteAccount,
-                    style: GoogleFonts.roboto(
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.w400,
-                      color: ColorsManager.white,
+                Spacer(),
+                BlocListener<UpdateProfileCubit, UpdateProfileStates>(
+                  listener: (context, state) {
+                    if (state is UpdateProfileLoadingState) {
+                      DialogUtils.showLoadingDialog(context);
+                    } else if (state is UpdateProfileSuccessState) {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    } else if (state is DeleteAccountSuccessState) {
+                      Navigator.pop(context);
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        RoutesManager.loginRoute,
+                            (route) => false,
+                      );
+                    } else if (state is UpdateProfileFailureState) {
+                      Navigator.pop(context);
+                      DialogUtils.showMessageDialog(context: context, content: state.error);
+                    }
+                  },
+                  child: Builder(
+                    builder: (context) => Column(
+                      children: [
+                        SizedBox(
+                          width: double.infinity,
+                          height: 56.h,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: ColorsManager.red,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.r),
+                              ),
+                            ),
+                            onPressed: () {
+                              context.read<UpdateProfileCubit>().deleteAccount();
+                            },
+                            child: Text(
+                              StringsManager.deleteAccount,
+                              style: GoogleFonts.roboto(
+                                fontSize: 20.sp,
+                                fontWeight: FontWeight.w400,
+                                color: ColorsManager.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 19.h),
+                        CustomButton(
+                          title: StringsManager.updateData,
+                          height: 56,
+                          textStyle: GoogleFonts.roboto(
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.w400,
+                            color: ColorsManager.black,
+                          ),
+                          onClick: () {
+                            if (formKey.currentState?.validate() ?? false) {
+                              context.read<UpdateProfileCubit>().updateUser(
+                                name: nameController.text,
+                                phone: phoneController.text,
+                                avatar: avatars[selectedAvatar],
+                              );
+                            }
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ),
-              SizedBox(height: 19.h),
-              CustomButton(
-                title: StringsManager.updateData,
-                height: 56,
-                textStyle: GoogleFonts.roboto(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w400,
-                  color: ColorsManager.black,
-                ),
-                onClick: () {
-                  if (formKey.currentState?.validate() ?? false) {}
-                },
-              ),
-              SizedBox(height: 33.h),
-            ],
+                SizedBox(height: 33.h),
+              ],
+            ),
           ),
         ),
       ),

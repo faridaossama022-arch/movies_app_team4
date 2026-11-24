@@ -97,6 +97,5 @@ abstract final class StringsManager {
   static const String resetPassword = "Reset Password";
   static const String deleteAccount = "Delete Account";
   static const String updateData = "Update Data";
-
-
+  static const String loginAgain = "Please login again, then delete your account";
 }

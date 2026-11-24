@@ -19,15 +19,22 @@ import 'package:movie_app/data/repository/auth_repository.dart' as _i257;
 import 'package:movie_app/data/repository/auth_repository_impl.dart' as _i408;
 import 'package:movie_app/data/repository/movies_repository.dart' as _i523;
 import 'package:movie_app/data/repository/movies_repository_impl.dart' as _i872;
+import 'package:movie_app/data/repository/user_repository.dart' as _i894;
+import 'package:movie_app/data/repository/user_repository_impl.dart' as _i800;
 import 'package:movie_app/ui/browse/cubit/browse_cubit.dart' as _i342;
-import 'package:movie_app/ui/home/screen/tabs/home/home_cubit.dart' as _i700;
-import 'package:movie_app/ui/home/screen/tabs/search/search_cubit.dart' as _i701;
 import 'package:movie_app/ui/forget_password/cubit/forget_password_cubit.dart'
     as _i520;
+import 'package:movie_app/ui/home/screen/tabs/home/home_cubit.dart' as _i585;
+import 'package:movie_app/ui/home/screen/tabs/profile/cubit/profile_cubit.dart'
+    as _i985;
+import 'package:movie_app/ui/home/screen/tabs/search/search_cubit.dart'
+    as _i573;
 import 'package:movie_app/ui/login/cubit/login_cubit.dart' as _i379;
 import 'package:movie_app/ui/movie_details/cubit/movie_details_cubit.dart'
     as _i551;
 import 'package:movie_app/ui/register/cubit/register_cubit.dart' as _i920;
+import 'package:movie_app/ui/update_profile/cubit/update_profile_cubit.dart'
+    as _i806;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -38,6 +45,7 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final networkModule = _$NetworkModule();
     gh.lazySingleton<_i361.Dio>(() => networkModule.dio);
+    gh.factory<_i894.UserRepository>(() => _i800.UserRepositoryImpl());
     gh.factory<_i257.AuthRepository>(() => _i408.AuthRepositoryImpl());
     gh.factory<_i520.ForgetPasswordCubit>(
       () => _i520.ForgetPasswordCubit(gh<_i257.AuthRepository>()),
@@ -54,14 +62,20 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i523.MoviesRepository>(
       () => _i872.MoviesRepositoryImpl(gh<_i827.MoviesApiClient>()),
     );
-    gh.factory<_i700.HomeCubit>(
-      () => _i700.HomeCubit(gh<_i523.MoviesRepository>()),
+    gh.factory<_i985.ProfileCubit>(
+      () => _i985.ProfileCubit(gh<_i894.UserRepository>()),
     );
-    gh.factory<_i701.SearchCubit>(
-      () => _i701.SearchCubit(gh<_i523.MoviesRepository>()),
+    gh.factory<_i806.UpdateProfileCubit>(
+      () => _i806.UpdateProfileCubit(gh<_i894.UserRepository>()),
     );
     gh.factory<_i342.BrowseCubit>(
       () => _i342.BrowseCubit(gh<_i523.MoviesRepository>()),
+    );
+    gh.factory<_i585.HomeCubit>(
+      () => _i585.HomeCubit(gh<_i523.MoviesRepository>()),
+    );
+    gh.factory<_i573.SearchCubit>(
+      () => _i573.SearchCubit(gh<_i523.MoviesRepository>()),
     );
     gh.factory<_i551.MovieDetailsCubit>(
       () => _i551.MovieDetailsCubit(gh<_i523.MoviesRepository>()),

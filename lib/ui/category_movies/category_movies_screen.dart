@@ -151,7 +151,6 @@ class _CategoryViewState extends State<_CategoryView> {
             child: const Text(StringsManager.retry),
             
           ),
-          Text("c")
         ],
       ),
     );

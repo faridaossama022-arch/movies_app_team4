@@ -6,6 +6,7 @@ import 'package:movie_app/core/DI/di.dart';
 import 'package:movie_app/core/resources/strings_manager.dart';
 import 'package:movie_app/core/resources/my_bloc_observer.dart';
 import 'package:movie_app/core/resources/routes_manager.dart';
+import 'package:movie_app/data/model/user_model.dart';
 import 'package:movie_app/ui/movie_details/cubit/movie_details_cubit.dart';
 import 'package:movie_app/ui/movie_details/screen/movie_details_screen.dart';
 import 'package:movie_app/firebase_options.dart';
@@ -71,7 +72,10 @@ class MyApp extends StatelessWidget {
                   child: const MovieDetailsScreen(),
                 );
               },
-              RoutesManager.updateProfileRoute: (_) => UpdateProfileScreen(),
+              RoutesManager.updateProfileRoute: (context) {
+                UserModel user = ModalRoute.of(context)!.settings.arguments as UserModel;
+                return UpdateProfileScreen(user: user);
+              },
             },
             initialRoute: RoutesManager.splashRoute,
           ),
